@@ -1,44 +1,46 @@
-import axios from 'axios';
-
-const serviceUrl = 'http://213.159.7.191:3000/';
+import Service from '../../services/LoginService';
 
 const state = {
-  error: '',
-  token: '',
-  users: [],
+  errors: [],
+  token: null,
+  isLogin: false,
+};
+
+const getters = {
+  firstError() {
+    return state.errors[0];
+  },
 };
 
 const mutations = {
   catchError(pState, error) {
-    state.error = error;
+    state.errors.push(error);
   },
   setToken(pState, token) {
     state.token = token;
   },
-  setUsers(pState, payload) {
-    state.users = payload.users;
+  setIsLogin(pState, bool) {
+    state.isLogin = bool;
   },
 };
 
 const actions = {
   async checkLogin(context, payload) {
-    await axios.post(`${serviceUrl}users/login`, {
-      email: payload.user,
-      password: payload.password,
-    }).then(
-      (response) => {
-        context.commit('setToken', response.data.token);
-        Promise.resolve(response.data);
-      },
-      (error) => {
-        Promise.reject(error);
-      });
+    const result = await Service.checkUserWithAxios(payload);
+    if (result.error) {
+      context.commit('catchError', result.error.message); // {"error":{"message":"Bulunamadı"}}
+      context.commit('setIsLogin', false);
+    } else {
+      context.commit('setToken', result.token); // {"message":"Geçerli !","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."}
+      context.commit('setIsLogin', true);
+    }
   },
 };
 
 const moduleLogin = {
   namespaced: true,
   state,
+  getters,
   mutations,
   actions,
 };

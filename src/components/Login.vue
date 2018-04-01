@@ -14,7 +14,7 @@
                   name="login"
                   label="Login"
                   type="text"
-                  v-model="usr">
+                  v-model="email">
                 </v-text-field>
                 <v-text-field
                   prepend-icon="lock"
@@ -22,17 +22,20 @@
                   label="Password"
                   id="password"
                   type="password"
-                  v-model="psw">
+                  v-model="password">
                 </v-text-field>
               </v-form>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="primary" @click="gir">{{ btnLogin }}</v-btn>
+              <v-btn color="primary" @click="login">{{ btnLogin }}</v-btn>
             </v-card-actions>
           </v-card>
-          <v-alert type="success" :value="true">
-            {{ token }}
+          <v-alert type="success" :value="true" v-if="isLogin">
+            {{ loginMessage }}
+          </v-alert>
+          <v-alert type="alert" :value="true" v-if="firstError!=null">
+            {{ errorMessage }}
           </v-alert>
         </v-flex>
       </v-layout>
@@ -41,67 +44,38 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'Login',
   data: () => ({
-    title: '',
-    btnLogin: '',
-    usr: '',
-    psw: '',
-    drawer: null,
+    title: 'Giriş',
+    btnLogin: 'Tamam',
+    email: '',
+    password: '',
+    loginMessage: 'Giriş başarılı, şimdi yönlendirileceksiniz...',
+    errorMessage: 'Giriş başarısız !',
   }),
   props: {
-    source: String,
+    alerttype: String,
   },
   computed: {
-    ...mapState('Login', ['token', 'users']),
-    firstUserId() {
-      let id = '';
-      if (this.$store.state.Login.users.length > 0) {
-        id = this.$store.state.Login.users[0].id;
-      }
-      return id;
-    },
-  },
-  watch: {
-    token: () => {
-      this.title = 'Token Değişti';
-      // this.tryLogin({ token: this.token });
-    },
+    ...mapState('Login', ['errors', 'token', 'isLogin']),
+    ...mapGetters('Login', ['firstError']),
   },
   methods: {
     ...mapActions('Login', [
       'checkLogin',
     ]),
-    gir() {
-      this.$store.dispatch('Login/checkLogin', { user: this.usr, password: this.psw });
+    login() {
+      // this.$store.dispatch('Login/checkLogin', { email: this.email, password: this.password });
+      this.checkLogin({ email: this.email, password: this.password });
     },
-  },
-  created() {
-    this.title = 'Giriş';
-    this.btnLogin = 'Tamam';
   },
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1,
-h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
+
 </style>
 

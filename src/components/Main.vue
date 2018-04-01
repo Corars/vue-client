@@ -206,6 +206,15 @@ export default {
   props: {
     source: String,
   },
+  computed: {
+    firstUserId() {
+      let id = '';
+      if (this.$store.state.Login.users.length > 0) {
+        id = this.$store.state.Login.users[0].id;
+      }
+      return id;
+    },
+  },
 };
 </script>
 

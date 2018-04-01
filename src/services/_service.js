@@ -16,10 +16,25 @@ export default {
       .catch(error => error);
   },
   checkUserWithAxios(payload) {
-    axios.post(`${serviceUrl}users/login`, {
+    return new Promise((resolve, reject) => {
+      resolve(
+        axios.post(`${serviceUrl}users/login`, {
+          email: payload.user,
+          password: payload.password,
+        }),
+      );
+      reject(
+        'hata',
+      );
+    })
+      .then(result => result.data.token);
+    /*
+    const a = axios.post(`${serviceUrl}users/login`, {
       email: payload.user,
       password: payload.password,
     });
+    return Promise.all([a]).then(([result]) => result);
+    */
   },
   getUsers() {
     fetch(`${serviceUrl}users`, {

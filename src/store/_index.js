@@ -1,7 +1,10 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import axios from 'axios';
 
 Vue.use(Vuex);
+
+const serviceUrl = 'http://213.159.7.191:3000/';
 
 const state = {
   username: 'Mehmet',
@@ -45,6 +48,20 @@ const actions = {
       .then(result => result.json())
       .catch(error => commit('hataYakala', error))
       .then(result => commit('dataYukle', result)); // commit({type:'dataYukle', jsonVeri:result}));
+  },
+  async checkLoginOrj(context, payload) {
+    await axios.post(`${serviceUrl}users/login`, {
+      email: payload.user,
+      password: payload.password,
+    }).then(
+      (resolve) => {
+        context.commit('setToken', resolve.data.token);
+        // Promise.resolve(response.data);
+      },
+      (reject) => {
+        context.commit('catchError', reject.message);
+        // Promise.reject(error);
+      });
   },
 };
 
