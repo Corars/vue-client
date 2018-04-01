@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import moduleSplash from './Splash';
-import moduleLogin from './Login';
-import moduleMain from './Main';
+import moduleSplash from './modules/Splash';
+import moduleLogin from './modules/Login';
+import moduleMain from './modules/Main';
 
 Vue.use(Vuex);
 

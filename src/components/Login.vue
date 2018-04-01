@@ -32,7 +32,7 @@
             </v-card-actions>
           </v-card>
           <v-alert type="success" :value="true">
-            {{ firstUser }}
+            {{ token }}
           </v-alert>
         </v-flex>
       </v-layout>
@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations, mapActions } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 export default {
   name: 'Login',
@@ -57,7 +57,7 @@ export default {
   },
   computed: {
     ...mapState('Login', ['token', 'users']),
-    firstUser() {
+    firstUserId() {
       let id = '';
       if (this.$store.state.Login.users.length > 0) {
         id = this.$store.state.Login.users[0].id;
@@ -72,15 +72,11 @@ export default {
     },
   },
   methods: {
-    ...mapMutations('Login', [
-      'controlLogin',
-    ]),
     ...mapActions('Login', [
-      'controlLogin',
-      'tryLogin',
+      'checkLogin',
     ]),
     gir() {
-      this.controlLogin({ usr: this.usr, psw: this.psw });
+      this.$store.dispatch('Login/checkLogin', { user: this.usr, password: this.psw });
     },
   },
   created() {

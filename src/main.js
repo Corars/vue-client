@@ -3,9 +3,10 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify';
 import 'vuetify/dist/vuetify.min.css';
+
 import App from './App';
-import router from './router';
-import store from './store/index';
+import VueRouter from './router';
+import VuexStore from './store/index';
 
 Vue.use(Vuetify);
 Vue.config.productionTip = false;
@@ -13,8 +14,8 @@ Vue.config.productionTip = false;
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  store,
-  router,
+  store: VuexStore,
+  router: VueRouter,
   components: {
     App,
   },
