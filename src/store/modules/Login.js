@@ -1,38 +1,52 @@
 import Service from '../../services/LoginService';
 
 const state = {
-  errors: [],
+  log: null,
+  error: null,
   token: null,
-  isLogin: false,
+  login: false,
 };
 
 const getters = {
-  firstError() {
-    return state.errors[0];
+  getLog() {
+    return state.log;
+  },
+  getError() {
+    return {
+      error: state.error,
+      message: 'Giriş başarısız !',
+      color: 'error',
+    };
+  },
+  getToken() {
+    return state.token;
+  },
+  getLogin() {
+    return {
+      state: state.login,
+      message: 'Giriş başarılı, şimdi yönlendirileceksiniz...',
+      color: 'success',
+    };
   },
 };
 
 const mutations = {
-  catchError(pState, error) {
-    state.errors.push(error);
-  },
-  setToken(pState, token) {
+  setState(pState, { login, message, token }) {
+    state.login = login;
+    state.error = message;
     state.token = token;
-  },
-  setIsLogin(pState, bool) {
-    state.isLogin = bool;
   },
 };
 
 const actions = {
   async checkLogin(context, payload) {
     const result = await Service.checkUserWithAxios(payload);
-    if (result.error) {
-      context.commit('catchError', result.error.message); // {"error":{"message":"Bulunamadı"}}
-      context.commit('setIsLogin', false);
-    } else {
-      context.commit('setToken', result.token); // {"message":"Geçerli !","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."}
-      context.commit('setIsLogin', true);
+    if (result.status === 401) { // {"message":"Kimlik doğrulama geçersiz !"}
+      context.commit('setState', { login: false, message: result.data.message, token: null });
+    } else if (result.status === 200) { // {"message":"Geçerli !","token":"eyJhbGciOiJ..."}
+      context.commit('setState', { login: true, message: null, token: result.data.token });
+    } else { // {"error":{"message":"Bulunamadı"}}
+      context.commit('setState', { login: false, message: 'Undefined Error !', token: null });
     }
   },
 };

@@ -8,8 +8,12 @@ import App from './App';
 import VueRouter from './router';
 import VuexStore from './store/index';
 
+import Alert from './components/Alert';
+
 Vue.use(Vuetify);
 Vue.config.productionTip = false;
+
+Vue.component('m-alert', Alert);
 
 /* eslint-disable no-new */
 new Vue({

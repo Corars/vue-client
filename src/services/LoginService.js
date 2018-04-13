@@ -3,11 +3,10 @@ import cs from './CommonService';
 
 export default {
   checkUserWithAxios({ email, password }) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       resolve(axios.post(`${cs.serviceUrl}users/login`, { email, password }));
-      reject('hata');
     })
-      .then(result => result.data)
-      .catch(error => error.response.data);
+      .then(result => result)
+      .catch(error => error.response);
   },
 };
